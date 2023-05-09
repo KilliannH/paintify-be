@@ -1,0 +1,13 @@
+#server
+server.port=9000
+
+#mySQL
+spring.datasource.url=jdbc:mysql://localhost:3306/SpringServerDB?createDatabaseIfNotExist=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
+spring.datasource.username=
+spring.datasource.password=
+spring.jpa.hibernate.ddl-auto=update
+
+#custom properties
+token.secret=secret
+token.exp=100000

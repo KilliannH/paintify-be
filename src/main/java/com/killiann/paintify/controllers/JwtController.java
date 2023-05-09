@@ -1,15 +1,12 @@
 package com.killiann.paintify.controllers;
 
+import com.killiann.paintify.payloads.*;
 import com.killiann.paintify.payloads.errors.GenericError;
 import com.killiann.paintify.utils.JwtUtil;
 import com.killiann.paintify.jwt.UserDetailsImpl;
 import com.killiann.paintify.models.ERole;
 import com.killiann.paintify.models.Role;
 import com.killiann.paintify.models.User;
-import com.killiann.paintify.payloads.LoginRequest;
-import com.killiann.paintify.payloads.MessageResponse;
-import com.killiann.paintify.payloads.SignupRequest;
-import com.killiann.paintify.payloads.LoginResponse;
 import com.killiann.paintify.repositories.RoleRepository;
 import com.killiann.paintify.repositories.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,6 +21,7 @@ import org.springframework.security.authentication.AuthenticationCredentialsNotF
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -145,8 +143,22 @@ public class JwtController {
         }
 
         user.setRoles(roles);
-        userRepository.save(user);
+        User dbUser = userRepository.save(user);
 
-        return ResponseEntity.status(201).body(new MessageResponse("User registered successfully"));
+        Authentication authentication = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(dbUser.getUsername(), signUpRequest.getPassword()));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        String jwtToken = jwtUtil.generateJwtToken(userDetails);
+
+        List<String> connRoles = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.status(201)
+                .body(new SignupResponse(jwtToken, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), connRoles));
     }
 }

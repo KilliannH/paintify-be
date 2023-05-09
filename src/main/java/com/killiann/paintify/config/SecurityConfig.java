@@ -4,18 +4,13 @@ import com.killiann.paintify.jwt.AuthEntryPointJwt;
 import com.killiann.paintify.jwt.JwtFilter;
 import com.killiann.paintify.jwt.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -51,15 +46,6 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-    /**
-     * control @EnableGlobalMethodSecurity(prePostEnabled = true)，to  solve AuthenticationCredentialsNotFoundException
-     */
-    @ConditionalOnProperty(prefix = "security",
-            name = "enabled",
-            havingValue = "true")
-    @EnableMethodSecurity()
-    static class Dummy { }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {

@@ -51,4 +51,19 @@ public class UserController {
     User one(@PathVariable Long id) {
         return this.userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
     }
+
+    @Operation(summary = "By Username", description = "Get user by username", tags = "Get")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = User.class))}
+            ),
+            @ApiResponse(responseCode = "401", description = "Unauthorized request",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = GenericError.class))}
+            )
+    })
+    @GetMapping("/users/username/{username}")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    User one(@PathVariable String username) {
+        return this.userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
+    }
 }

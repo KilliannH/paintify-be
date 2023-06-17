@@ -31,7 +31,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .setSubject(userPrincipal.getUsername())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
+                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs * 1000L))
                 .signWith(key).compact();
     }
 

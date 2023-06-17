@@ -102,7 +102,7 @@ public class JwtController {
         // Create new user
         User user = new User(signUpRequest.getUsername(),
                 signUpRequest.getEmail(),
-                encoder.encode(signUpRequest.getPassword()));
+                encoder.encode(signUpRequest.getPassword()), signUpRequest.getImageUrl());
 
         Set<String> strRoles = signUpRequest.getRoles();
         Set<Role> roles = new HashSet<>();
@@ -153,6 +153,6 @@ public class JwtController {
                 .collect(Collectors.toList());
 
         return ResponseEntity.status(201)
-                .body(new SignupResponse(jwtToken, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), connRoles));
+                .body(new SignupResponse(jwtToken, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), connRoles, dbUser.getImageUrl()));
     }
 }

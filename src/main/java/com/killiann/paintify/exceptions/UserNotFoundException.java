@@ -5,5 +5,5 @@ public class UserNotFoundException extends RuntimeException {
         super("Could not find user with id: " + id);
     }
 
-    public UserNotFoundException(String facebookId) { super("Could not find user with facebookId: " + facebookId); }
+    public UserNotFoundException(String username) { super("Could not find user with username: " + username); }
 }

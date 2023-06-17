@@ -77,12 +77,8 @@ public class JwtController {
 
         String jwtToken = jwtUtil.generateJwtToken(userDetails);
 
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
-                .collect(Collectors.toList());
-
         return ResponseEntity.ok()
-                .body(new LoginResponse(jwtToken, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles));
+                .body(new LoginResponse(jwtToken, userDetails.getId()));
     }
 
     @Operation(summary = "Signup", description = "Signup a new user", tags = "Post")

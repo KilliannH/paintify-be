@@ -52,7 +52,7 @@ public class UserController {
         return this.userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
     }
 
-    @Operation(summary = "By Username", description = "Get user by username", tags = "Get")
+    @Operation(summary = "By Username", description = "Find user by username", tags = "Post")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = User.class))}
@@ -61,9 +61,9 @@ public class UserController {
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = GenericError.class))}
             )
     })
-    @GetMapping("/users/username/{username}")
+    @PostMapping("/users")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-    User one(@PathVariable String username) {
+    User one(@RequestBody String username) {
         return this.userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
     }
 }
